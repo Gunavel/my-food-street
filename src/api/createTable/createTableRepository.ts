@@ -28,7 +28,27 @@ export const create = async () => {
         AttributeName: 'SK',
         AttributeType: ScalarAttributeType.S,
       },
+      {
+        AttributeName: 'USIPK',
+        AttributeType: ScalarAttributeType.S,
+      },
+      {
+        AttributeName: 'USISK',
+        AttributeType: ScalarAttributeType.S,
+      },
+      {
+        AttributeName: 'RSIPK',
+        AttributeType: ScalarAttributeType.S,
+      },
+      {
+        AttributeName: 'RSISK',
+        AttributeType: ScalarAttributeType.S,
+      },
     ],
+    ProvisionedThroughput: {
+      ReadCapacityUnits: 5,
+      WriteCapacityUnits: 5,
+    },
     GlobalSecondaryIndexes: [
       {
         IndexName: 'UserSecondaryIndex',
@@ -45,6 +65,10 @@ export const create = async () => {
         Projection: {
           ProjectionType: ProjectionType.ALL,
         },
+        ProvisionedThroughput: {
+          ReadCapacityUnits: 5,
+          WriteCapacityUnits: 5,
+        },
       },
       {
         IndexName: 'RestaurantSecondaryIndex',
@@ -60,6 +84,10 @@ export const create = async () => {
         ],
         Projection: {
           ProjectionType: ProjectionType.ALL,
+        },
+        ProvisionedThroughput: {
+          ReadCapacityUnits: 5,
+          WriteCapacityUnits: 5,
         },
       },
     ],

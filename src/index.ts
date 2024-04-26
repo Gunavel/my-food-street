@@ -19,7 +19,7 @@ app.get('/', (req: Request, res: Response) => {
   res.send('Welcome to My Food Street API');
 });
 
-app.get('/createTable', createTableRouter);
+app.use('/createTable', createTableRouter);
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {

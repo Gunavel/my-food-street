@@ -11,7 +11,7 @@
     "npm": "^10.5.0"
   },
   "scripts": {
-    "dev": "tsx watch --clear-screen=false src/index.ts",
+    "dev": "tsx watch --clear-screen=false --inspect src/index.ts",
     "build": "rimraf dist && tsup",
     "start": "node dist/index.js",
     "clean": "rimraf dist coverage",

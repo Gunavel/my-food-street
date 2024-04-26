@@ -7,6 +7,8 @@ import helmet from 'helmet';
 
 import createTableRouter from '@/api/createTable/createTableRouter';
 
+import getDBClient from './common/utils/dbClient';
+
 const app: Express = express();
 
 // Middlewares
@@ -14,6 +16,8 @@ app.use(cors());
 app.use(helmet());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+getDBClient();
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Welcome to My Food Street API');

@@ -1,11 +1,11 @@
 import { CreateTableCommand, KeyType, ProjectionType, ScalarAttributeType } from '@aws-sdk/client-dynamodb';
 
-import getClient from '@/common/utils/dbClient';
+import getDBClient from '@/common/utils/dbClient';
 
 const TABLE_NAME = 'MyFoodStreet';
 
 export const create = async () => {
-  const dbClient = getClient();
+  const dbClient = getDBClient();
 
   const createTableCommand = new CreateTableCommand({
     TableName: TABLE_NAME,

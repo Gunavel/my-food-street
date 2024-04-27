@@ -6,4 +6,5 @@ export const USER_ROLE = {
 export const ENTITY_TYPES = {
   USER: 'USER',
   RESTAURANT: 'RESTAURANT',
+  CART: 'CART',
 };

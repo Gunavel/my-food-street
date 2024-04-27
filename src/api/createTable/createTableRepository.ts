@@ -2,13 +2,11 @@ import { CreateTableCommand, KeyType, ProjectionType, ScalarAttributeType } from
 
 import getDBClient from '@/common/utils/dbClient';
 
-const TABLE_NAME = 'MyFoodStreet';
-
 export const create = async () => {
   const dbClient = getDBClient();
 
   const createTableCommand = new CreateTableCommand({
-    TableName: TABLE_NAME,
+    TableName: process.env.DYNAMODB_TABLE_NAME,
     KeySchema: [
       {
         AttributeName: 'PK',

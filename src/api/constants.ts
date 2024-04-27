@@ -1,0 +1,8 @@
+export const USER_ROLE = {
+  CUSTOMER: 'CUSTOMER',
+  RESTAURANT_ADMIN: 'RESTAURANT_ADMIN',
+};
+
+export const ENTITY_TYPES = {
+  USER: 'USER',
+};

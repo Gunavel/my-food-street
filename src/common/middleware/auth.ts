@@ -40,7 +40,10 @@ export function authZ(userRole: string) {
       if (req.userRole === userRole) {
         next();
       } else {
-        const apiResponse = new APIResponse(StatusCodes.BAD_REQUEST, 'errorMessages');
+        const apiResponse = new APIResponse(
+          StatusCodes.UNAUTHORIZED,
+          'This user is not authorized to perform the operation'
+        );
         sendAPIResponse(apiResponse, res);
       }
     } catch (error) {

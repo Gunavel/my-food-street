@@ -5,12 +5,15 @@ import { authN, authZ } from '@/common/middleware/auth';
 import { validate } from '@/common/middleware/schemaValidator';
 import { sendAPIResponse } from '@/common/utils/httpHandlers';
 
+import { getRestaurantOrder, getRestaurantOrders, updateRestaurantOrderStatus } from '../order/orderService';
 import {
   AddMenuItemRequestSchema,
   AddMenuRequestSchema,
   CreateRestaurantRequestSchema,
   DeleteMenuItemRequestSchema,
+  GetRestaurantOrderRequestSchema,
   GetRestaurantRequestSchema,
+  RestaurantOrderUpdateStatusRequestSchema,
   UpdateMenuItemRequestSchema,
 } from './restaurantModel';
 import {
@@ -105,6 +108,57 @@ restaurantRouter.get(
       restaurantId: decodeURIComponent(input.params.restaurantId),
       userId: req.userId,
       userRole: req.userRole,
+    });
+
+    return sendAPIResponse(response, res);
+  }
+);
+
+restaurantRouter.put(
+  '/:restaurantId/orders/:orderId/status',
+  authN,
+  authZ(USER_ROLE.RESTAURANT_ADMIN),
+  validate(RestaurantOrderUpdateStatusRequestSchema),
+  async (req: Request, res: Response) => {
+    const input = RestaurantOrderUpdateStatusRequestSchema.parse({ params: req.params, body: req.body });
+    const response = await updateRestaurantOrderStatus({
+      restaurantId: decodeURIComponent(input.params.restaurantId),
+      orderId: decodeURIComponent(input.params.orderId),
+      userId: req.userId,
+      status: input.body.status,
+    });
+
+    return sendAPIResponse(response, res);
+  }
+);
+
+restaurantRouter.get(
+  '/:restaurantId/orders/:orderId',
+  authN,
+  authZ(USER_ROLE.RESTAURANT_ADMIN),
+  validate(GetRestaurantOrderRequestSchema),
+  async (req: Request, res: Response) => {
+    const input = GetRestaurantOrderRequestSchema.parse({ params: req.params });
+    const response = await getRestaurantOrder({
+      restaurantId: decodeURIComponent(input.params.restaurantId),
+      orderId: decodeURIComponent(input.params.orderId),
+      userId: req.userId,
+    });
+
+    return sendAPIResponse(response, res);
+  }
+);
+
+restaurantRouter.get(
+  '/:restaurantId/orders',
+  authN,
+  authZ(USER_ROLE.RESTAURANT_ADMIN),
+  validate(GetRestaurantRequestSchema),
+  async (req: Request, res: Response) => {
+    const input = GetRestaurantRequestSchema.parse({ params: req.params });
+    const response = await getRestaurantOrders({
+      restaurantId: decodeURIComponent(input.params.restaurantId),
+      userId: req.userId,
     });
 
     return sendAPIResponse(response, res);

@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { ORDER_STATUS } from '@/api/constants';
+
 const CreateRestaurantSchema = z
   .object({
     name: z.string(),
@@ -21,6 +23,26 @@ const GetRestaurantSchema = z
   .required();
 export const GetRestaurantRequestSchema = z.object({
   params: GetRestaurantSchema,
+});
+
+const RestaurantIdOrderIdSchema = z
+  .object({
+    restaurantId: z.string(),
+    orderId: z.string(),
+  })
+  .required();
+export const GetRestaurantOrderRequestSchema = z.object({
+  params: RestaurantIdOrderIdSchema,
+});
+
+const RestaurantOrderUpdateStatusSchema = z
+  .object({
+    status: z.enum([ORDER_STATUS.APPROVED, ORDER_STATUS.COMPLETED]),
+  })
+  .required();
+export const RestaurantOrderUpdateStatusRequestSchema = z.object({
+  params: RestaurantIdOrderIdSchema,
+  body: RestaurantOrderUpdateStatusSchema,
 });
 
 const GetRestaurantMenuSchema = z

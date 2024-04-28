@@ -7,4 +7,11 @@ export const ENTITY_TYPES = {
   USER: 'USER',
   RESTAURANT: 'RESTAURANT',
   CART: 'CART',
+  ORDER: 'ORDER',
+};
+
+export const ORDER_STATUS = {
+  PLACED: 'PLACED',
+  APPROVED: 'APPROVED',
+  COMPLETED: 'COMPLETED',
 };

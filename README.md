@@ -4,7 +4,7 @@ MyFoodStreet API is a comprehensive food ordering system built with Node.js, Exp
 
 ## USP
 
-Users can place order from multiple restaurants in one go from their favorite food street!! 🤩
+Users can place order from multiple restaurants in one go at their favorite food street!! 🤩
 
 ## Features
 
@@ -75,7 +75,7 @@ See [here](https://github.com/Gunavel/my-food-street/blob/5a3346262f7775209eca93
 - Restaurant: `/api/v1/restaurants`
 - Cart: `/api/v1/carts`
 
-For full list of endpoints. See OpenAPISpec.yml.
+For full list of endpoints. See [OpenAPISpec.yml](https://github.com/Gunavel/my-food-street/blob/main/src/api/OpenAPISpec.yml).
 
 ## Production
 

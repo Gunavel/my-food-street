@@ -1,0 +1,1550 @@
+openapi: '3.0.0'
+info:
+  title: MyFoodStreet API V1
+  version: '1.0'
+  description: Browse and order food from restaurants at your favorite food street.
+servers:
+  - url: http://localhost:3000/api/v1
+paths:
+  /auth/register:
+    post:
+      summary: Create User
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                name:
+                  type: string
+                  minLength: 6
+                  maxLength: 20
+                  description: 'User Name (minimum length: 6 and maximum length: 20)'
+                password:
+                  type: string
+                  format: password
+                  minLength: 8
+                  description: 'Account Password (minimum length: 8)'
+                role:
+                  type: string
+                  description: 'User Role (CUSTOMER or RESTAURANT_ADMIN)'
+                  enum:
+                    - CUSTOMER
+                    - RESTAURANT_ADMIN
+              required:
+                - email
+                - name
+                - password
+                - role
+            encoding:
+              password:
+                allowReserved: true
+      responses:
+        201:
+          description: Success Response
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Success_201'
+              example:
+                message: 'User account with #username successfully created'
+        400:
+          description: Bad request
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Request contains invalid data
+        409:
+          description: User already exists
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Resource already exists
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Unknown error occured. Please try again.'
+  /auth/login:
+    post:
+      summary: Authenticate User
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+              required:
+                - email
+                - password
+            encoding:
+              password:
+                allowReserved: true
+      responses:
+        200:
+          description: Successful Login
+          content:
+            applicaton/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/AuthTokenResponse'
+        400:
+          description: Bad request
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Request contains invalid data
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Unknown error occured. Please try again.'
+  /auth/logout:
+    post:
+      summary: Log out User
+      security:
+        - bearerAuth: []
+      responses:
+        201:
+          description: User logged out
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Success_201'
+              example:
+                message: 'User successfully logged out'
+        401:
+          description: Invalid auth credentials
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Request contains invalid authentication credentials
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Unknown error occured. Please try again.'
+  /restaurants:
+    get:
+      summary: Fetch all Restaurants - Customer
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/RestaurantsResponse'
+        401:
+          description: Invalid auth credentials
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Request contains invalid authentication credentials
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Unknown error occured. Please try again.'
+    post:
+      summary: Create Restaurant - Restaurant Admin
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewRestaurant'
+      responses:
+        201:
+          description: Success Response
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Success_201'
+              example:
+                message: 'Restuarant #restaurantName successfully created.'
+        400:
+          description: Bad request
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Request contains invalid input'
+        403:
+          description: Access restricted
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Current user is not authorized to create a restaurant.'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Unknown error occured. Please try again.'
+  /restaurants/{restaurantId}:
+    parameters:
+      - name: restaurantId
+        description: The unique identifier of the restaurant
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/Id'
+    get:
+      summary: Get Restaurant
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/RestaurantResponse'
+        404:
+          description: No Restaurant Found
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Restaurant doesn't exist
+        401:
+          description: Invalid auth credentials
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Request contains invalid authentication credentials
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Unknown error occured. Please try again.'
+  /restaurants/{restaurantId}/menu/items:
+    parameters:
+      - name: restaurantId
+        description: The unique identifier of the restaurant
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/Id'
+    get:
+      summary: Get Menu
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/MenuItemsResponse'
+        404:
+          description: No Menu Found
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Menu doesn't exist
+        401:
+          description: Invalid auth credentials
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Request contains invalid authentication credentials
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Unknown error occured. Please try again.'
+    post:
+      summary: Add Menu Items
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewMenu'
+      responses:
+        201:
+          description: Success Response
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Success_201'
+              example:
+                message: 'Menu with items added successfully.'
+        400:
+          description: Bad request
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Request contains invalid data
+        401:
+          description: Invalid auth credentials
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Request contains invalid authentication credentials
+        403:
+          description: Access restricted
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Current user is not authorized to add menu items.'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Unknown error occured. Please try again.'
+    put:
+      summary: Add Menu Item
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewMenuItem'
+      responses:
+        201:
+          description: Success Response
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Success_201'
+              example:
+                message: 'Menu with items added successfully.'
+        400:
+          description: Bad request
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Request contains invalid data
+        401:
+          description: Invalid auth credentials
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Request contains invalid authentication credentials
+        403:
+          description: Access restricted
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Current user is not authorized to add menu item.'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Unknown error occured. Please try again.'
+  /restaurants/{restaurantId}/menu/items/{itemId}:
+    parameters:
+      - name: restaurantId
+        description: The unique identifier of the restaurant
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/Id'
+      - name: itemId
+        description: The unique identifier of the menu item
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/Id'
+    patch:
+      summary: Update Menu Item
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/NewMenuItemPatch'
+      responses:
+        201:
+          description: Success Response
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Success_201'
+              example:
+                message: 'Menu item #itemname updated successfully.'
+        400:
+          description: Bad request
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Request contains invalid data
+        401:
+          description: Invalid auth credentials
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Request contains invalid authentication credentials
+        403:
+          description: Access restricted
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Current user is not authorized to add menu items.'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Unknown error occured. Please try again.'
+    delete:
+      summary: Delete Menu Item
+      security:
+        - bearerAuth: []
+      responses:
+        201:
+          description: Success Response
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Success_201'
+              example:
+                message: 'Menu item with #itemname deleted successfully.'
+        400:
+          description: Bad request
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Request contains invalid data
+        401:
+          description: Invalid auth credentials
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Request contains invalid authentication credentials
+        403:
+          description: Access restricted
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Current user is not authorized to delete menu item.'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Unknown error occured. Please try again.'
+  /carts:
+    get:
+      summary: Get User Carts
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/CartsResponse'
+        401:
+          description: Invalid auth credentials
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Request contains invalid authentication credentials
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Unknown error occured. Please try again.'
+    post:
+      summary: Save Cart
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewCart'
+      responses:
+        201:
+          description: Success Response
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Success_201'
+              example:
+                message: 'Cart successfully saved'
+        400:
+          description: Bad request
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Request contains invalid data
+        401:
+          description: Invalid auth credentials
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Request contains invalid authentication credentials
+        403:
+          description: Access restricted
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Current user is not authorized to save a cart.'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Unknown error occured. Please try again.'
+  /carts/{cartId}:
+    parameters:
+      - name: cartId
+        description: The unique identifier of the cart
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/Id'
+    get:
+      summary: Get User Cart
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Cart'
+        401:
+          description: Invalid auth credentials
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Request contains invalid authentication credentials
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Unknown error occured. Please try again.'
+    delete:
+      summary: Delete Cart
+      security:
+        - bearerAuth: []
+      responses:
+        201:
+          description: Success Response
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Success_201'
+              example:
+                message: 'Cart deleted successfully.'
+        400:
+          description: Bad request
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Request contains invalid data
+        401:
+          description: Invalid auth credentials
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Request contains invalid authentication credentials
+        403:
+          description: Access restricted
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Current user is not authorized to delete a cart.'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Unknown error occured. Please try again.'
+  /carts/{cartId}/items:
+    parameters:
+      - name: cartId
+        description: The unique identifier of the cart
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/Id'
+    put:
+      summary: Add Item to Cart
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/NewCartItem'
+      responses:
+        201:
+          description: Success Response
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Success_201'
+              example:
+                message: 'Item added successfully.'
+        400:
+          description: Bad request
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Request contains invalid data
+        401:
+          description: Invalid auth credentials
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Request contains invalid authentication credentials
+        403:
+          description: Access restricted
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Current user is not authorized to add menu item to cart.'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Unknown error occured. Please try again.'
+  /carts/{cartId}/items/{itemId}:
+    parameters:
+      - name: cartId
+        description: The unique identifier of the cart
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/Id'
+      - name: itemId
+        description: The unique identifier of the menu item
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/Id'
+    patch:
+      summary: Update Cart Item
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/NewCartItemPatch'
+      responses:
+        201:
+          description: Success Response
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Success_201'
+              example:
+                message: 'Cart item #itemname updated successfully.'
+        400:
+          description: Bad request
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Request contains invalid data
+        401:
+          description: Invalid auth credentials
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Request contains invalid authentication credentials
+        403:
+          description: Access restricted
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Current user is not authorized to update cart item.'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Unknown error occured. Please try again.'
+    delete:
+      summary: Delete Cart Item
+      security:
+        - bearerAuth: []
+      responses:
+        201:
+          description: Success Response
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Success_201'
+              example:
+                message: 'Cart item deleted successfully.'
+        400:
+          description: Bad request
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Request contains invalid data
+        401:
+          description: Invalid auth credentials
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Request contains invalid authentication credentials
+        403:
+          description: Access restricted
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Current user is not authorized to delete cart item.'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Unknown error occured. Please try again.'
+  /users/{userId}/orders:
+    parameters:
+      - name: userId
+        description: The unique identifier of the user
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/Id'
+    get:
+      summary: Get User Orders
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/UserOrdersResponse'
+        400:
+          description: Bad request
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Request contains invalid data
+        401:
+          description: Invalid auth credentials
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Request contains invalid authentication credentials
+        404:
+          description: No User Order Found
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Restaurant doesn't exist
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Unknown error occured. Please try again.'
+    post:
+      summary: Place Order
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewOrder'
+      responses:
+        201:
+          description: Success Response
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Success_201'
+              example:
+                message: 'Order successfully placed'
+        400:
+          description: Bad request
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Request contains invalid data
+        401:
+          description: Invalid auth credentials
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Request contains invalid authentication credentials
+        403:
+          description: Access restricted
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Current user is not authorized to place order.'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Unknown error occured. Please try again.'
+  /users/{userId}/orders/{orderId}:
+    parameters:
+      - name: userId
+        description: The unique identifier of the user
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/Id'
+      - name: orderId
+        description: The unique identifier of the order
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/Id'
+    get:
+      summary: Get User Order
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/UserOrder'
+        401:
+          description: Invalid auth credentials
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Request contains invalid authentication credentials
+        404:
+          description: No User Order Found
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Order doesn't exist
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Unknown error occured. Please try again.'
+  /restaurants/{restaurantId}/orders:
+    parameters:
+      - name: restaurantId
+        description: The unique identifier of the restaurant
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/Id'
+    get:
+      summary: Get Restaurant Orders
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/RestaurantOrdersResponse'
+        404:
+          description: No Restaurant Order Found
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Order doesn't exist
+        401:
+          description: Invalid auth credentials
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Request contains invalid authentication credentials
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Unknown error occured. Please try again.'
+  /restaurants/{restaurantId}/orders/{orderId}:
+    parameters:
+      - name: restaurantId
+        description: The unique identifier of the restaurant
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/Id'
+      - name: orderId
+        description: The unique identifier of the order
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/Id'
+    get:
+      summary: Get Restaurant Order
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/RestaurantOrder'
+        404:
+          description: No Restaurant Order Found
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Order doesn't exist
+        401:
+          description: Invalid auth credentials
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Request contains invalid authentication credentials
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Unknown error occured. Please try again.'
+  /restaurants/{restaurantId}/orders/{orderId}/status:
+    parameters:
+      - name: restaurantId
+        description: The unique identifier of the restaurant
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/Id'
+      - name: orderId
+        description: The unique identifier of the order
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/Id'
+    put:
+      summary: Update Order Status
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OrderStatus'
+      responses:
+        201:
+          description: Success Response
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Success_201'
+              example:
+                message: Order status updated successfully
+        400:
+          description: Bad request
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Request contains invalid data
+        401:
+          description: Invalid auth credentials
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Request contains invalid authentication credentials
+        403:
+          description: Access restricted
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Current user is not authorized to update order status.'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: 'Unknown error occured. Please try again.'
+components:
+  schemas:
+    Id:
+      description: Unique identifier of the entity
+      type: string
+    AuthTokenResponse:
+      description: Authentication Token for accessing protected api endpoints
+      type: object
+      required:
+        - authToken
+      properties:
+        authToken:
+          type: string
+    NewOrder:
+      type: object
+      properties:
+        restaurants:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              items:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PlaceOrderItem'
+            required:
+              - id
+              - items
+      required:
+        - restaurants
+    OrderStatus:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+            - APPROVED
+            - COMPLETED
+      required:
+        - status
+    PlaceOrderItem:
+      type: object
+      properties:
+        id:
+          type: string
+        quantity:
+          type: integer
+        price:
+          type: string
+      required:
+        - id
+        - quantity
+        - price
+    UserOrdersResponse:
+      type: object
+      properties:
+        orders:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserOrder'
+    UserOrder:
+      type: object
+      properties:
+        id:
+          type: string
+        timestamp:
+          type: string
+        restaurants:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              name:
+                type: string
+              phoneNumber:
+                type: string
+              items:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OrderItem'
+              total:
+                type: string
+        total:
+          type: string
+    RestaurantOrdersResponse:
+      type: object
+      properties:
+        orders:
+          type: array
+          items:
+            $ref: '#/components/schemas/RestaurantOrder'
+    RestaurantOrder:
+      type: object
+      properties:
+        id:
+          type: string
+        timestamp:
+          type: string
+        user:
+          type: object
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+            phoneNumber:
+              type: string
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItem'
+        total:
+          type: string
+    OrderItem:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        category:
+          type: string
+        price:
+          type: string
+        quantity:
+          type: integer
+        total:
+          type: string
+    CartsResponse:
+      type: object
+      properties:
+        carts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Cart'
+    RestaurantsResponse:
+      type: object
+      properties:
+        restaurants:
+          type: array
+          items:
+            $ref: '#/components/schemas/Restaurant'
+    RestaurantResponse:
+      type: object
+      properties:
+        restaurant:
+          $ref: '#/components/schemas/Restaurant'
+    Restaurant:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        phoneNumber:
+          type: string
+        menu:
+          type: array
+          items:
+            $ref: '#/components/schemas/MenuItem'
+    Cart:
+      type: object
+      properties:
+        id:
+          type: string
+        timestamp:
+          type: string
+        restaurants:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              name:
+                type: string
+              items:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MenuItemWithQuantity'
+    NewCart:
+      type: object
+      properties:
+        restaurants:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              items:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MenuItemCart'
+            required:
+              - id
+              - items
+      required:
+        - restaurants
+    NewCartItem:
+      type: object
+      properties:
+        restaurantId:
+          type: string
+        itemId:
+          type: string
+        quantity:
+          type: integer
+      required:
+        - restaurantId
+        - itemId
+        - quantity
+    MenuItemsResponse:
+      type: object
+      properties:
+        menuItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/MenuItem'
+    MenuItem:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        category:
+          type: string
+        price:
+          type: string
+    MenuItemWithQuantity:
+      allOf:
+        - $ref: '#/components/schemas/MenuItem'
+        - type: object
+          properties:
+            quantity:
+              type: integer
+              minimum: 1
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        category:
+          type: string
+        price:
+          type: string
+    MenuItemCart:
+      type: object
+      properties:
+        id:
+          type: string
+        quantity:
+          type: integer
+    NewRestaurant:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        phoneNumber:
+          type: string
+        menu:
+          type: array
+          items:
+            $ref: '#/components/schemas/MenuItemInput'
+      required:
+        - name
+        - email
+        - phoneNumber
+    NewMenu:
+      type: object
+      properties:
+        menu:
+          type: array
+          items:
+            $ref: '#/components/schemas/MenuItemInput'
+          required:
+            - items
+      required:
+        - menu
+    NewMenuItem:
+      type: object
+      properties:
+        menuItem:
+          $ref: '#/components/schemas/MenuItemInput'
+      required:
+        - menuItem
+    MenuItemInput:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        category:
+          type: string
+          enum:
+            - appetizer
+            - mainCourse
+            - dessert
+        price:
+          type: string
+      required:
+        - name
+        - description
+        - category
+        - price
+    NewMenuItemPatch:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        category:
+          type: string
+        price:
+          type: string
+    NewCartItemPatch:
+      type: object
+      properties:
+        itemId:
+          type: string
+        quantity:
+          type: integer
+      required:
+        - itemId
+        - quantity
+    Success_201:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+    Error:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

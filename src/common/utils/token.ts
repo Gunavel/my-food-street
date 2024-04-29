@@ -1,10 +1,6 @@
 import jwt from 'jsonwebtoken';
 import nodeCache from 'node-cache';
 
-import { getLogger } from './logger';
-
-const logger = getLogger({ name: 'token class' });
-
 const cache = new nodeCache();
 type Payload = {
   userId: string;
@@ -26,14 +22,7 @@ export class Token {
   }
 
   static verifyToken(token: string) {
-    let payload;
-    try {
-      payload = jwt.verify(token, process.env.JWT_SECRET || 'default_secret') as Payload;
-    } catch (e) {
-      logger.error(e);
-    }
-
-    return payload;
+    return jwt.verify(token, process.env.JWT_SECRET || 'default_secret') as Payload;
   }
 
   static invalidateToken(userId: string) {

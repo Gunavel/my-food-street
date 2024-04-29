@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
+import { JsonWebTokenError } from 'jsonwebtoken';
 import { z, ZodError } from 'zod';
 
 import { APIResponse } from '@/common/models/apiResponse';
@@ -11,16 +12,20 @@ export function validate(schema: z.ZodObject<any, any>) {
       schema.parse({ body: req.body, query: req.query, params: req.params });
       next();
     } catch (error) {
-      let apiResponse;
+      let apiResponse = new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'Internal Server Error');
+
       if (error instanceof ZodError) {
         const errorMessages = error.errors.map((issue: any) => ({
           message: `${issue.path.join('.')} is ${issue.message}`,
         }));
-        apiResponse = new APIResponse(StatusCodes.BAD_REQUEST, errorMessages);
-        sendAPIResponse(apiResponse, res);
-      } else {
-        apiResponse = new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'Internal Server Error');
+        apiResponse = new APIResponse(StatusCodes.BAD_REQUEST, errorMessages?.[0]?.message);
       }
+
+      if (error instanceof JsonWebTokenError) {
+        apiResponse = new APIResponse(StatusCodes.BAD_REQUEST, 'JWT Error. Please verify.');
+      }
+
+      sendAPIResponse(apiResponse, res);
     }
   };
 }

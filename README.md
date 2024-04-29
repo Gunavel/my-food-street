@@ -61,6 +61,8 @@ npm run dev
 
 ## API Endpoints
 
+### v1
+
 - Auth: `/api/v1/auth`
 - User: `/api/v1/users`
 - Restaurant: `/api/v1/restaurants`

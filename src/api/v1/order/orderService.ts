@@ -46,7 +46,7 @@ export const placeUserOrder = async ({
     return new APIResponse(StatusCodes.CREATED, res);
   } catch (error) {
     logger.error(error);
-    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'res');
+    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'Unknown error occured. Please try again.');
   }
 };
 
@@ -61,7 +61,7 @@ export const getUserOrders = async ({ userId }: { userId: string }) => {
     return new APIResponse(StatusCodes.OK, res);
   } catch (error) {
     logger.error(error);
-    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'res');
+    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'Unknown error occured. Please try again.');
   }
 };
 
@@ -69,7 +69,7 @@ export const getRestaurantOrders = async ({ restaurantId, userId }: { restaurant
   try {
     const dbRes = await getAdminRestaurant({ restaurantId, userId });
     if (!dbRes.Item) {
-      return new APIResponse(StatusCodes.UNAUTHORIZED, 'res');
+      return new APIResponse(StatusCodes.UNAUTHORIZED, 'User is not authorized.');
     }
 
     const dbResponse = await queryRestaurantOrders({ restaurantId });
@@ -81,7 +81,7 @@ export const getRestaurantOrders = async ({ restaurantId, userId }: { restaurant
     return new APIResponse(StatusCodes.OK, res);
   } catch (error) {
     logger.error(error);
-    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'res');
+    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'Unknown error occured. Please try again.');
   }
 };
 
@@ -97,7 +97,7 @@ export const getRestaurantOrder = async ({
   try {
     const dbRes = await getAdminRestaurant({ restaurantId, userId });
     if (!dbRes.Item) {
-      return new APIResponse(StatusCodes.UNAUTHORIZED, 'res');
+      return new APIResponse(StatusCodes.UNAUTHORIZED, 'User is not authorized.');
     }
 
     const dbResponse = await getOrderForRestaurant({ restaurantId, orderId });
@@ -109,7 +109,7 @@ export const getRestaurantOrder = async ({
     return new APIResponse(StatusCodes.OK, res);
   } catch (error) {
     logger.error(error);
-    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'res');
+    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'Unknown error occured. Please try again.');
   }
 };
 
@@ -127,19 +127,19 @@ export const updateRestaurantOrderStatus = async ({
   try {
     const adminRes = await getAdminRestaurant({ restaurantId, userId });
     if (!adminRes.Item) {
-      return new APIResponse(StatusCodes.UNAUTHORIZED, 'res');
+      return new APIResponse(StatusCodes.UNAUTHORIZED, 'User is not authorized.');
     }
 
     const resOrder = await getOrderForRestaurant({ restaurantId, orderId });
     if (!resOrder.Items?.[0]) {
-      return new APIResponse(StatusCodes.UNAUTHORIZED, 'res');
+      return new APIResponse(StatusCodes.UNAUTHORIZED, 'User is not authorized.');
     }
 
     await updateOrderStatus({ orderedUserId: resOrder.Items?.[0].UserId, orderId, status });
     return new APIResponse(StatusCodes.CREATED, 'Order Status updated successfully.');
   } catch (error) {
     logger.error(error);
-    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'res');
+    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'Unknown error occured. Please try again.');
   }
 };
 
@@ -152,6 +152,6 @@ export const getUserOrder = async ({ userId, orderId }: { userId: string; orderI
     return new APIResponse(StatusCodes.OK, res);
   } catch (error) {
     logger.error(error);
-    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'res');
+    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'Unknown error occured. Please try again.');
   }
 };

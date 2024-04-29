@@ -17,6 +17,6 @@ export const createTable = async () => {
     return new APIResponse(StatusCodes.CREATED, res);
   } catch (error) {
     logger.error(error);
-    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'res');
+    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'Unknown error occured. Please try again.');
   }
 };

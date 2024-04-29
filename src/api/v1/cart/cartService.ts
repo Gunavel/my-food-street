@@ -19,7 +19,7 @@ export const saveUserCart = async ({ cartInput, userId }: { cartInput: TSaveCart
     return new APIResponse(StatusCodes.CREATED, res);
   } catch (error) {
     logger.error(error);
-    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'res');
+    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'Unknown error occured. Please try again.');
   }
 };
 
@@ -34,7 +34,7 @@ export const getUserCarts = async ({ userId }: { userId: string }) => {
     return new APIResponse(StatusCodes.OK, res);
   } catch (error) {
     logger.error(error);
-    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'res');
+    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'Unknown error occured. Please try again.');
   }
 };
 
@@ -48,7 +48,7 @@ export const getUserCart = async ({ cartId, userId }: { userId: string; cartId: 
     return new APIResponse(StatusCodes.OK, res);
   } catch (error) {
     logger.error(error);
-    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'res');
+    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'Unknown error occured. Please try again.');
   }
 };
 
@@ -62,7 +62,7 @@ export const deleteUserCart = async ({ userId, cartId }: { userId: string; cartI
     return new APIResponse(StatusCodes.CREATED, res);
   } catch (error) {
     logger.error(error);
-    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'res');
+    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'Unknown error occured. Please try again.');
   }
 };
 
@@ -84,7 +84,7 @@ export const addUserCartItem = async ({
     return new APIResponse(StatusCodes.CREATED, res);
   } catch (error) {
     logger.error(error);
-    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'res');
+    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'Unknown error occured. Please try again.');
   }
 };
 
@@ -106,7 +106,7 @@ export const deleteUserCartItem = async ({
     return new APIResponse(StatusCodes.CREATED, res);
   } catch (error) {
     logger.error(error);
-    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'res');
+    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'Unknown error occured. Please try again.');
   }
 };
 
@@ -130,6 +130,6 @@ export const updateUserCartItem = async ({
     return new APIResponse(StatusCodes.CREATED, res);
   } catch (error) {
     logger.error(error);
-    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'res');
+    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'Unknown error occured. Please try again.');
   }
 };

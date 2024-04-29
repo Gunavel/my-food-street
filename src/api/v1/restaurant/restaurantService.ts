@@ -36,7 +36,7 @@ export const createRestaurant = async ({
     return new APIResponse(StatusCodes.CREATED, res);
   } catch (error) {
     logger.error(error);
-    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'res');
+    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'Unknown error occured. Please try again.');
   }
 };
 
@@ -57,7 +57,7 @@ export const getUserRestaurants = async ({ userId, userRole }: { userId: string;
     return new APIResponse(StatusCodes.OK, res);
   } catch (error) {
     logger.error(error);
-    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'res');
+    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'Unknown error occured. Please try again.');
   }
 };
 
@@ -89,7 +89,7 @@ export const getUserRestaurant = async ({
     return new APIResponse(StatusCodes.OK, res);
   } catch (error) {
     logger.error(error);
-    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'res');
+    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'Unknown error occured. Please try again.');
   }
 };
 
@@ -120,7 +120,7 @@ export const addRestaurantMenu = async ({
     return new APIResponse(StatusCodes.CREATED, res);
   } catch (error) {
     logger.error(error);
-    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'res');
+    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'Unknown error occured. Please try again.');
   }
 };
 
@@ -146,7 +146,7 @@ export const addRestaurantMenuItem = async ({
     return new APIResponse(StatusCodes.CREATED, res);
   } catch (error) {
     logger.error(error);
-    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'res');
+    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'Unknown error occured. Please try again.');
   }
 };
 
@@ -178,7 +178,7 @@ export const getRestaurantMenu = async ({
     return new APIResponse(StatusCodes.OK, res);
   } catch (error) {
     logger.error(error);
-    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'res');
+    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'Unknown error occured. Please try again.');
   }
 };
 
@@ -202,7 +202,7 @@ export const updateMenuItemDetails = async ({
     return new APIResponse(StatusCodes.CREATED, res);
   } catch (error) {
     logger.error(error);
-    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'res');
+    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'Unknown error occured. Please try again.');
   }
 };
 
@@ -224,6 +224,6 @@ export const deleteRestaurantMenuItem = async ({
     return new APIResponse(StatusCodes.CREATED, res);
   } catch (error) {
     logger.error(error);
-    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'res');
+    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'Unknown error occured. Please try again.');
   }
 };

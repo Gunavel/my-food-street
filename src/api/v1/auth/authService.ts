@@ -23,7 +23,7 @@ export const registerUser = async ({ userInput }: { userInput: CreateUserInput }
     return new APIResponse(StatusCodes.CREATED, res);
   } catch (error) {
     logger.error(error);
-    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'res');
+    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'Unknown error occured. Please try again.');
   }
 };
 
@@ -33,7 +33,7 @@ export const login = async ({ userInput }: { userInput: UserLoginInput }) => {
     const isValidPassword = await bcrypt.compare(userInput.password, dbUser?.Item?.Password);
 
     if (!isValidPassword) {
-      return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'res');
+      return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'Unknown error occured. Please try again.');
     }
 
     const payload = { userId: dbUser?.Item?.UserId, userRole: dbUser?.Item?.Role };
@@ -45,7 +45,7 @@ export const login = async ({ userInput }: { userInput: UserLoginInput }) => {
     });
   } catch (error) {
     logger.error(error);
-    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'res');
+    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'Unknown error occured. Please try again.');
   }
 };
 
@@ -60,6 +60,6 @@ export const logout = async ({ userId }: { userId: string }) => {
     });
   } catch (error) {
     logger.error(error);
-    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'res');
+    return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'Unknown error occured. Please try again.');
   }
 };

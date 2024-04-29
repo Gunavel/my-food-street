@@ -77,6 +77,10 @@ See [here](https://github.com/Gunavel/my-food-street/blob/5a3346262f7775209eca93
 
 For full list of endpoints. See [OpenAPISpec.yml](https://github.com/Gunavel/my-food-street/blob/main/src/api/OpenAPISpec.yml).
 
+### Postman
+
+[<img src="https://run.pstmn.io/button.svg" alt="Run In Postman" style="width: 128px; height: 32px;">](https://app.getpostman.com/run-collection/13414490-264f3f4e-3503-4efe-8a42-45964fc659be?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D13414490-264f3f4e-3503-4efe-8a42-45964fc659be%26entityType%3Dcollection%26workspaceId%3D763b31d4-afd5-4236-ac57-cb4e1ee16281)
+
 ## Production
 
 ### Build

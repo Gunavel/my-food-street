@@ -2,6 +2,7 @@ import { StatusCodes } from 'http-status-codes';
 
 import { USER_ROLE } from '@/api/constants';
 import { APIResponse } from '@/common/models/apiResponse';
+import { getLogger } from '@/common/utils/logger';
 
 import { AddMenuInput, AddMenuItemInput, CreateRestaurantInput, UpdateMenuItemInput } from './restaurantModel';
 import {
@@ -15,6 +16,8 @@ import {
   getRestaurantById,
   updateMenuItem,
 } from './restaurantRepository';
+
+const logger = getLogger({ name: 'restaurant service' });
 
 export const createRestaurant = async ({
   restaurantInput,
@@ -32,7 +35,7 @@ export const createRestaurant = async ({
     };
     return new APIResponse(StatusCodes.CREATED, res);
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'res');
   }
 };
@@ -53,7 +56,7 @@ export const getUserRestaurants = async ({ userId, userRole }: { userId: string;
     };
     return new APIResponse(StatusCodes.OK, res);
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'res');
   }
 };
@@ -85,7 +88,7 @@ export const getUserRestaurant = async ({
     };
     return new APIResponse(StatusCodes.OK, res);
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'res');
   }
 };
@@ -116,7 +119,7 @@ export const addRestaurantMenu = async ({
     };
     return new APIResponse(StatusCodes.CREATED, res);
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'res');
   }
 };
@@ -142,7 +145,7 @@ export const addRestaurantMenuItem = async ({
     };
     return new APIResponse(StatusCodes.CREATED, res);
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'res');
   }
 };
@@ -174,7 +177,7 @@ export const getRestaurantMenu = async ({
     };
     return new APIResponse(StatusCodes.OK, res);
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'res');
   }
 };
@@ -198,7 +201,7 @@ export const updateMenuItemDetails = async ({
     };
     return new APIResponse(StatusCodes.CREATED, res);
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'res');
   }
 };
@@ -220,7 +223,7 @@ export const deleteRestaurantMenuItem = async ({
     };
     return new APIResponse(StatusCodes.CREATED, res);
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'res');
   }
 };

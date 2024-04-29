@@ -2,10 +2,13 @@ import bcrypt from 'bcrypt';
 import { StatusCodes } from 'http-status-codes';
 
 import { APIResponse } from '@/common/models/apiResponse';
+import { getLogger } from '@/common/utils/logger';
 import { Token } from '@/common/utils/token';
 
 import { CreateUserInput, UserLoginInput } from './authModel';
 import { createUserAccount, getUserByEmail } from './authRepository';
+
+const logger = getLogger({ name: 'auth service' });
 
 export const registerUser = async ({ userInput }: { userInput: CreateUserInput }) => {
   try {
@@ -19,7 +22,7 @@ export const registerUser = async ({ userInput }: { userInput: CreateUserInput }
     };
     return new APIResponse(StatusCodes.CREATED, res);
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'res');
   }
 };
@@ -41,7 +44,7 @@ export const login = async ({ userInput }: { userInput: UserLoginInput }) => {
       },
     });
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'res');
   }
 };
@@ -56,7 +59,7 @@ export const logout = async ({ userId }: { userId: string }) => {
       },
     });
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'res');
   }
 };

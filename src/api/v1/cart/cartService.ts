@@ -1,9 +1,12 @@
 import { StatusCodes } from 'http-status-codes';
 
 import { APIResponse } from '@/common/models/apiResponse';
+import { getLogger } from '@/common/utils/logger';
 
 import { TAddCartItem, TSaveCart, TUpdateCartItem } from './cartModel';
 import { addCartItem, deleteCart, deleteCartItem, getCart, getCarts, saveCart, updateCartItem } from './cartRepository';
+
+const logger = getLogger({ name: 'cart service' });
 
 export const saveUserCart = async ({ cartInput, userId }: { cartInput: TSaveCart; userId: string }) => {
   try {
@@ -15,7 +18,7 @@ export const saveUserCart = async ({ cartInput, userId }: { cartInput: TSaveCart
     };
     return new APIResponse(StatusCodes.CREATED, res);
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'res');
   }
 };
@@ -30,7 +33,7 @@ export const getUserCarts = async ({ userId }: { userId: string }) => {
     };
     return new APIResponse(StatusCodes.OK, res);
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'res');
   }
 };
@@ -44,7 +47,7 @@ export const getUserCart = async ({ cartId, userId }: { userId: string; cartId: 
     };
     return new APIResponse(StatusCodes.OK, res);
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'res');
   }
 };
@@ -58,7 +61,7 @@ export const deleteUserCart = async ({ userId, cartId }: { userId: string; cartI
     };
     return new APIResponse(StatusCodes.CREATED, res);
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'res');
   }
 };
@@ -80,7 +83,7 @@ export const addUserCartItem = async ({
     };
     return new APIResponse(StatusCodes.CREATED, res);
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'res');
   }
 };
@@ -102,7 +105,7 @@ export const deleteUserCartItem = async ({
     };
     return new APIResponse(StatusCodes.CREATED, res);
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'res');
   }
 };
@@ -126,7 +129,7 @@ export const updateUserCartItem = async ({
     };
     return new APIResponse(StatusCodes.CREATED, res);
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return new APIResponse(StatusCodes.INTERNAL_SERVER_ERROR, 'res');
   }
 };

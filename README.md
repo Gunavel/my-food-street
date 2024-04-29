@@ -59,6 +59,13 @@ PORT=3000
 npm run dev
 ```
 
+#### Create DynamoDB Table
+
+Send a GET request to `http://localhost:3000/createTable`
+
+This creates a new dynamodb table with all required keys and indexes
+See [here](https://github.com/Gunavel/my-food-street/blob/5a3346262f7775209eca93a0d87edc4c71a47485/src/api/createTable/createTableRepository.ts) for more details
+
 ## API Endpoints
 
 ### v1

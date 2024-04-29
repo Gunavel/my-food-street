@@ -12,8 +12,8 @@
   },
   "scripts": {
     "dev": "tsx watch --clear-screen=false --inspect src/index.ts | pino-pretty",
-    "build": "rimraf dist && tsup",
-    "start": "node dist/index.js",
+    "build": "NODE_ENV=production rimraf dist && tsup",
+    "start": "NODE_ENV=production node dist/index.js",
     "clean": "rimraf dist coverage",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
